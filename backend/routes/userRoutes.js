@@ -3,7 +3,7 @@ const router = express.Router();
 
 const User = require("../models/User");
 
-// ✅ Get all users
+//  Get all users
 router.get("/", async (req, res) => {
   try {
     const users = await User.find(); // 🔥 पूरा data (role सहित)

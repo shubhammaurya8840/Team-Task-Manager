@@ -3,7 +3,7 @@ const router = express.Router();
 const Task = require("../models/Task");
 const auth = require("../middleware/authMiddleware");
 
-// ➕ Create Task
+//  Create Task
 router.post("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -20,7 +20,7 @@ router.post("/", auth, async (req, res) => {
       createdBy: req.user.id,
     });
 
-    // 🔥 return populated data
+    //  return populated data
     const populatedTask = await Task.findById(task._id)
       .populate("assignedTo", "name")
       .populate("project", "name");
@@ -31,7 +31,7 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// 📥 Get Tasks
+//  Get Tasks
 router.get("/", auth, async (req, res) => {
   try {
     let tasks;
@@ -56,7 +56,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// 🔄 Update Status
+//  Update Status
 router.put("/:id", auth, async (req, res) => {
   try {
     const task = await Task.findByIdAndUpdate(
@@ -73,7 +73,7 @@ router.put("/:id", auth, async (req, res) => {
   }
 });
 
-// ❌ Delete Task
+//  Delete Task
 router.delete("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "admin") {

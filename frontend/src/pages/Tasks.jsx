@@ -20,13 +20,13 @@ const Tasks = () => {
   const [filter, setFilter] = useState("all");
   const [user, setUser] = useState(null);
 
-  // 🔐 Load user
+  //  Load user
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
   }, []);
 
-  // 📥 Fetch Data
+  //  Fetch Data
   const fetchTasks = async () => {
     const res = await getTasks();
     setTasks(res.data);
@@ -48,7 +48,7 @@ const Tasks = () => {
     fetchProjects();
   }, []);
 
-  // ➕ Add Task
+  //  Add Task
   const handleAdd = async () => {
     if (!title) return;
 
@@ -67,19 +67,19 @@ const Tasks = () => {
     fetchTasks();
   };
 
-  // ❌ Delete
+  //  Delete
   const handleDelete = async (id) => {
     await deleteTask(id);
     fetchTasks();
   };
 
-  // 🔄 Status update
+  //  Status update
   const handleStatus = async (id, status) => {
     await updateTask(id, { status });
     fetchTasks();
   };
 
-  // 🔍 Filter
+  // Filter
   const filteredTasks = tasks.filter((t) => {
     if (filter === "completed") return t.status === "completed";
     if (filter === "pending") return t.status === "pending";
@@ -92,10 +92,10 @@ const Tasks = () => {
 
       <div className="p-6 max-w-4xl mx-auto bg-gray-50 min-h-screen">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Task Manager 🚀
+          Task Manager 
         </h2>
 
-        {/* 🔐 ADMIN CREATE */}
+        {/*ADMIN CREATE */}
         {user?.role === "admin" && (
           <div className="bg-white p-4 rounded-xl shadow mb-6 space-y-3">
             <h3 className="font-semibold">Create Task</h3>
@@ -182,7 +182,7 @@ const Tasks = () => {
 
         {/* ❌ Empty */}
         {filteredTasks.length === 0 && (
-          <p className="text-center text-gray-500">No tasks yet 🚀</p>
+          <p className="text-center text-gray-500">No tasks yet...</p>
         )}
 
         {/* 🧩 TASK LIST */}
