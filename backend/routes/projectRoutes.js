@@ -2,21 +2,49 @@ const express = require("express");
 const router = express.Router();
 
 const Project = require("../models/Project");
-const Task = require("../models/Task"); // 🔥 MUST
+const Task = require("../models/Task");
+const auth = require("../middleware/authMiddleware");
 
-// DELETE PROJECT + RELATED TASKS
-router.delete("/:id", async (req, res) => {
+// ➕ CREATE PROJECT (admin only)
+router.post("/", auth, async (req, res) => {
   try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Only admin can create project" });
+    }
+
+    const project = await Project.create({
+      name: req.body.name,
+    });
+
+    res.json(project);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+});
+
+// 📥 GET ALL PROJECTS
+router.get("/", auth, async (req, res) => {
+  try {
+    const projects = await Project.find();
+    res.json(projects);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+});
+
+// ❌ DELETE PROJECT + RELATED TASKS
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Only admin can delete" });
+    }
+
     const projectId = req.params.id;
 
-    console.log("Deleting Project:", projectId);
-
-    // 🔥 Step 1: Delete tasks linked to project
+    // Delete related tasks
     const deletedTasks = await Task.deleteMany({ project: projectId });
 
-    console.log("Deleted tasks count:", deletedTasks.deletedCount);
-
-    // 🔥 Step 2: Delete project
+    // Delete project
     const deletedProject = await Project.findByIdAndDelete(projectId);
 
     if (!deletedProject) {
@@ -28,7 +56,6 @@ router.delete("/:id", async (req, res) => {
       deletedTasks: deletedTasks.deletedCount,
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ msg: err.message });
   }
 });
